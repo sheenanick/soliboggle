@@ -4,10 +4,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -20,10 +23,15 @@ import butterknife.ButterKnife;
 
 public class GameActivity extends AppCompatActivity implements View.OnClickListener {
     @Bind(R.id.playButton) Button mPlayButton;
+    @Bind(R.id.submitWordButton) Button mSubmitWordButton;
     @Bind(R.id.gameGridView) GridView mGameGridView;
     @Bind(R.id.timerBar) ProgressBar mTimerBar;
+    @Bind(R.id.wordInputTextView) TextView mWordInputTextView;
+    @Bind(R.id.scoreTextView) TextView mScoreTextView;
 
     Random random = new Random();
+    String word = "";
+    int score = 0;
 
     String[][] diceArray = new String[][] {
             {"R", "I", "F", "O", "B", "X"},
@@ -34,7 +42,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             {"L", "U", "P", "E", "T", "S"},
             {"A", "C", "I", "T", "O", "A"},
             {"Y", "L", "G", "K", "U", "E"},
-            {"Qu", "B", "M", "J", "O", "A"},
+            {"QU", "B", "M", "J", "O", "A"},
             {"E", "H", "I", "S", "P", "N"},
             {"V", "E", "T", "I", "G", "N"},
             {"B", "A", "L", "I", "Y", "T"},
@@ -54,10 +62,10 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         ButterKnife.bind(this);
 
         mPlayButton.setOnClickListener(this);
+        mSubmitWordButton.setOnClickListener(this);
 
         for(int i = 0; i < thisRoundLetters.length; i++) {
             thisRoundLetters[i] = diceArray[i][rollD6()];
-            Log.d("GameActivity", thisRoundLetters[i]);
         }
 
         thisRoundLettersArrayList = Arrays.asList(thisRoundLetters);
@@ -65,13 +73,39 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
         ArrayAdapter adapter = new ArrayAdapter(this, android.R.layout.simple_list_item_1, thisRoundLetters);
         mGameGridView.setAdapter(adapter);
+
+        mGameGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                String value = (String)parent.getItemAtPosition(position);
+                word += value;
+                mWordInputTextView.setText(word);
+                Log.d("GameActivity", word);
+            }
+        });
     }
 
     @Override
     public void onClick(View v) {
         if (v == mPlayButton) {
             Log.d("GameActivity", "Play!");
+        } else if (v == mSubmitWordButton) {
+            if (checkWord(word)){
+                scoreWord(word);
+            }
+            Log.d("GameActivity", mWordInputTextView.getText().toString());
         }
+    }
+
+    public boolean checkWord(String word) {
+        return !word.equals("");
+    }
+
+    public int scoreWord(String word) {
+        score = word.length();
+        String displayScore = "Score: " + score;
+        mScoreTextView.setText(displayScore);
+        return score;
     }
 
     public int rollD6() {
