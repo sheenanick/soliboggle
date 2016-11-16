@@ -2,7 +2,6 @@ package com.example.guest.boggle;
 
 import android.content.Intent;
 import android.graphics.Typeface;
-import android.support.annotation.BinderThread;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -14,7 +13,7 @@ import butterknife.ButterKnife;
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
     @Bind(R.id.mainTitleTextView) TextView mMainTitleTextView;
-    @Bind(R.id.playButton) Button mPlayButton;
+    @Bind(R.id.startButton) Button mStartButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,12 +24,12 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         Typeface komikaxFont = Typeface.createFromAsset(getAssets(), "fonts/komikax.ttf");
         mMainTitleTextView.setTypeface(komikaxFont);
 
-        mPlayButton.setOnClickListener(this);
+        mStartButton.setOnClickListener(this);
     }
 
     @Override
     public void onClick(View v) {
-        if (v == mPlayButton) {
+        if (v == mStartButton) {
             Intent intent = new Intent(MainActivity.this, GameActivity.class);
             startActivity(intent);
         }
