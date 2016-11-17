@@ -1,5 +1,7 @@
 package com.example.guest.boggle;
 
+import android.content.Context;
+import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.util.Log;
@@ -11,6 +13,7 @@ import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -28,6 +31,8 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
     @Bind(R.id.timerBar) ProgressBar mTimerBar;
     @Bind(R.id.wordInputTextView) TextView mWordInputTextView;
     @Bind(R.id.scoreTextView) TextView mScoreTextView;
+
+//    private Context context = getApplicationContext();
 
     Random random = new Random();
     String word = "";
@@ -54,6 +59,7 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
 
     String[] thisRoundLetters = new String[16];
     List<String> thisRoundLettersArrayList = new ArrayList<>();
+    List<Integer> thisRoundClickedPositionsArrayList = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -77,10 +83,22 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
         mGameGridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
             public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                String value = (String)parent.getItemAtPosition(position);
-                word += value;
-                mWordInputTextView.setText(word);
-                Log.d("GameActivity", word);
+                if(!thisRoundClickedPositionsArrayList.contains(position)) {
+                    String value = (String) parent.getItemAtPosition(position);
+                    word += value;
+                    mWordInputTextView.setText(word);
+
+
+                    thisRoundClickedPositionsArrayList.add(position);
+
+
+                    mGameGridView.getChildAt(position).setBackgroundColor(ContextCompat.getColor(GameActivity.this, R.color.colorAccent));
+
+
+                    Log.d("GameActivity", word);
+                }
+                else
+                    Toast.makeText(GameActivity.this, "You already clicked that one, fool!", Toast.LENGTH_SHORT).show();
             }
         });
     }
@@ -93,19 +111,42 @@ public class GameActivity extends AppCompatActivity implements View.OnClickListe
             if (checkWord(word)){
                 scoreWord(word);
             }
+            word = "";
+            mWordInputTextView.setText("");
+
+            for(int i = 0; i < 16; i++) {
+                mGameGridView.getChildAt(i).setBackgroundColor(ContextCompat.getColor(this, R.color.colorPrimaryLight));
+            }
+            thisRoundClickedPositionsArrayList.clear();
+
             Log.d("GameActivity", mWordInputTextView.getText().toString());
         }
     }
 
     public boolean checkWord(String word) {
-        return !word.equals("");
+        if(word.length() < 3) {
+            Toast.makeText(GameActivity.this, "Too short!", Toast.LENGTH_SHORT).show();
+            return false;
+        }
+        return true;
+
     }
 
-    public int scoreWord(String word) {
-        score = word.length();
+    public void scoreWord(String word) {
+
+        if(word.length() < 5)
+            score += 1;
+        else if(word.length() == 5)
+            score += 2;
+        else if(word.length() == 6)
+            score += 3;
+        else if(word.length() == 7)
+            score += 5;
+        else
+            score += 11;
+
         String displayScore = "Score: " + score;
         mScoreTextView.setText(displayScore);
-        return score;
     }
 
     public int rollD6() {
