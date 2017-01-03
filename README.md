@@ -18,8 +18,8 @@ You will need [Android Studio](https://developer.android.com/studio/index.html) 
 
 ## Running / Development
 
-* Create a virtual device in Android studio and run the application.
-* Or connect an android device to your computer and run the application on the device.
+* Create a virtual device in Android Studio and run the application.
+* Or connect an Android device to your computer and run the application on the device.
 
 ## Known Issues
 
@@ -36,7 +36,7 @@ You will need [Android Studio](https://developer.android.com/studio/index.html) 
 
 ## Support and Contact Details
 
-Please feel free to contact  sheenanick@gmail.com if you have any issues or questions, ideas or concerns.
+Please feel free to contact sheenanick@gmail.com if you have any issues or questions, ideas or concerns.
 
 ### License
 
